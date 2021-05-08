@@ -1,0 +1,207 @@
+swagger: "2.0"
+info:
+  title: TorrServer HTTP API
+  version: v1
+host: "127.0.0.1:8090"
+paths:
+
+  /echo:
+    get:
+      # operationId: listVersionsv2
+      summary: Return version of server
+      produces:
+      - text/plain
+      responses:
+        200:
+          description: OK
+
+  /shutdown:
+    get:
+      # operationId: getVersionDetailsv2
+      summary: Shutdown server
+      responses:
+        200:
+          description: OK
+
+  /stream:
+    get:
+      # operationId: listVersionsv2
+      # summary: Return version of server
+      parameters:
+        - in: query
+          name: link
+          type: string
+          required: false
+          description: magnet/hash/link to torrent
+        - in: query
+          name: index
+          type: integer
+          required: false
+          description: index of file
+        - in: query
+          name: preload
+          type: boolean
+          required: false
+          description: preload torrent
+        - in: query
+          name: stat
+          type: boolean
+          required: false
+          description: return stat of torrent
+        - in: query
+          name: save
+          type: boolean
+          required: false
+          description: save to db
+        - in: query
+          name: m3u
+          type: boolean
+          required: false
+          description: return m3u
+        - in: query
+          name: fromlast
+          type: boolean
+          required: false
+          description: return m3u from last play
+        - in: query
+          name: play
+          type: boolean
+          required: false
+          description: start stream torrent
+        - in: query
+          name: title
+          type: string
+          required: false
+          description: set title of torrent
+        - in: query
+          name: poster
+          type: string
+          required: false
+          description: set poster link of torrent
+      produces:
+      - text/plain
+      responses:
+        200:
+          description: OK
+
+  /playlistall/all.m3u:
+    get:
+      summary: Get all http links of all torrents in m3u list
+      produces:
+      - text/plain
+      responses:
+        200:
+          description: OK
+
+  /playlist:
+    get:
+      summary: Get http link of torrent in m3u list
+      parameters:
+        - in: query
+          name: hash
+          type: string
+          required: true
+          description: hash of torrent
+        - in: query
+          name: fromlast
+          type: boolean
+          required: false
+          description: from last play file
+      produces:
+      - text/plain
+      responses:
+        200:
+          description: OK
+
+  /torrents:
+    post:
+      # summary:
+      consumes:
+      - application/json
+      parameters:
+        - in: body
+          name: data
+          schema:
+            type: object
+            properties: 
+              action:
+                type: string
+                description: add/get/set/rem/list/drop
+                enum:
+                - add
+                - get
+                - set
+                - rem
+                - list
+                - drop
+              link:
+                type: string
+                description: hash/magnet/link to torrent
+              hash:
+                type: string
+                description: hash of torrent
+              title:
+                type: string
+                description: title of torrent
+              poster:
+                type: string
+                description: link to poster of torrent
+              data:
+                type: string
+                description: custom data of torrent, may be json
+              save_to_db:
+                type: boolean
+      responses:
+        200:
+          description: OK
+
+  /torrent/upload:
+    post:
+      # summary:
+      consumes:
+      - multipart/form-data
+      parameters:
+        - in: formData
+          name: title
+          type: string
+          description: set title of torrent
+        - in: formData
+          name: poster
+          type: string
+          description: set poster link of torrent
+        - in: formData
+          name: data
+          type: string
+          description: set custom data of torrent, may be json
+        - in: formData
+          name: save
+          type: boolean
+          description: save to db
+      responses:
+        200:
+          description: OK
+
+  /cache:
+    post:
+      summary: cache stat
+      consumes:
+      - application/json
+      parameters:
+        - in: body
+          name: data
+          schema:
+            type: object
+            properties: 
+              action:
+                type: string
+                description: get
+                default: get
+              hash:
+                type: string
+                description: hash of torrent
+                default: hash of torrent
+      responses:
+        200:
+          description: OK
+# consumes:
+# - application/json
